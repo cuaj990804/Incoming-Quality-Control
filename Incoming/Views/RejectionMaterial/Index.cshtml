@@ -1,0 +1,635 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+<h1>Rechazos</h1>
+
+<table class="table table-hover" id="DataTable">
+    <thead>
+        <tr>
+            <th>
+                Categoria
+            </th>
+            <th>
+                Programa
+            </th>
+            <th>
+                No. Parte
+            </th>
+            <th>
+                Base
+            </th>
+            <th>
+                Conector
+            </th>
+            <th>
+                Moldeo
+            </th>
+            <th>
+                Gap
+            </th>
+            <th>
+                Heater
+            </th>
+            <th>
+                NTC
+            </th>
+            <th>
+                Inside
+            </th>
+            <th>
+                Outside
+            </th>
+            <th>
+                Guard
+            </th>
+            <th>Fecha</th>
+
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div class="modal fade" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="DatePickerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DatePickerModalLabel">Búsqueda avanzada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off">
+
+                    <div class="form-group">
+                        <label for="Cetegory">Categoria:</label>
+                        <select id="CategorySelect" class="form-control" required>
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="Base">Base</option>
+                            <option value="FINISHEDGOOD">Volante Forrado</option>
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Program">Programa:</label>
+                        <select id="ProgramSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            @foreach (var part in ViewBag.ProgramList as List<string>)
+                            {
+                                <option value="@part">@part</option>
+                            }
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Base">Numero de parte:</label>
+                        <input type="text" class="form-control" id="PartNumberIn">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="Base">Numero de Base / Juliana:</label>
+                        <input type="text" class="form-control" id="BaseIn">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="Molding">Moldeo:</label>
+                        <select id="MoldingSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="GAP">GAP:</label>
+                        <select id="GAPSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Connector">Conector</label>
+                        <select id="ConectorSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ElectricTest">Prueba Electrica:</label>
+                        <select id="ElectricTestSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Heater">Heater:</label>
+                        <select id="HeaterSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="NTC">NTC:</label>
+                        <select id="NTCSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="INSIDE">INSIDE:</label>
+                        <select id="InsideSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="OUTSIDE">OUTSIDE:</label>
+                        <select id="OutsideSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="GUARD">GUARD:</label>
+                        <select id="GuardSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="DateRange">Fecha</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type="date" class="form-control" id="startDate" required>
+                            </div>
+                            <div class="col">
+                                <input type="date" class="form-control" id="endDate" >
+                            </div>
+                        </div>
+                    </div>
+
+
+
+         
+                    
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="clearDateRange">Limpiar Filtros</button>
+                <button type="button" class="btn btn-primary" id="applyDateRange">Aplicar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="SearchModal" tabindex="-1" role="dialog" aria-labelledby="SearchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buscar registro por número de base</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" id="searchBaseInput" class="form-control" placeholder="Ingrese número de base">
+                    <button class="btn btn-primary" id="btnSearchBase">Buscar</button>
+                </div>
+                <div id="searchResult" style="display: none;">
+                    
+                </div>
+                <div id="noResultMsg" class="text-danger" style="display: none;">No se encontró ningún registro.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script type="module" src="/lib/sweetalert2.all.min.js"></script>
+    <script type="module" src="/js/incoming/ui.js" asp-append-version="true"></script>
+    <script>
+        let containerId;
+
+        let table = $('#DataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [[5, 'desc']],
+            "pageLength": 15,
+            "searching": false,
+            "dom": 'Bfrtip',
+            searching: false,
+            ajax: {
+                url: '/RejectionMaterial/SetTable',
+                type: 'POST',
+                data: function (d) {
+                    d.program = $('#ProgramSelect').val();
+                    d.category = $('#CategorySelect').val();
+                    d.partnumber = $('#PartNumberIn').val();
+                    d.base = $('#BaseIn').val(); 
+                    d.molding = $('#MoldingSelect').val(); // Filtro por "No. parte"
+                    d.gap = $('#GAPSelect').val(); // Filtro por "Programa"
+                    d.connector = $('#ConectorSelect').val(); // Filtro por "Área en GDI"
+                    d.ElectricTest = $('#ElectricTestSelect').val();
+                    d.Heater = $('#HeaterSelect').val(); // Filtro por "Forma de almacenamiento"
+                    d.NTC = $('#NTCSelect').val();
+                    d.Inside = $('#InsideSelect').val();
+                    d.Outside = $('#OutsideSelect').val();
+                    d.Guard = $('#GuardSelect').val();
+                    d.startDate = $('#startDate').val();
+                    d.endDate = $('#endDate').val();
+
+                }
+            },
+            "buttons":[
+                {
+                    text: 'Filtro',
+                    className: 'btn btn-secondary btn-date-picker',
+                    action: function (e, dt, node, config) {
+                        $('#FilterModal').modal('show');
+                    }
+                },
+                {
+                        text: '<i class="bi bi-file-earmark-spreadsheet-fill"></i>',
+                        className: 'btn btn-success',
+
+                        action: function (e, dt, node, config) {
+                            var category = $('#CategorySelect').val();
+                            var program = $('#ProgramSelect').val();
+                            var partnumber = $('#PartNumberIn').val();
+                            var base = $('#BaseIn').val();
+                            var molding = $('#MoldingSelect').val();
+                            var gap = $('#GAPSelect').val();
+                            var connector = $('#ConectorSelect').val();
+                            var ElectricTest = $('#ElectricTestSelect').val();
+                            var Heater = $('#HeaterSelect').val();
+                            var NTC = $('#NTCSelect').val();
+                            var Inside = $('#InsideSelect').val();
+                            var Outside = $('#OutsideSelect').val();
+                            var Guard = $('#GuardSelect').val();
+                            var datestart = $('#startDate').val();
+                            var dateend = $('#endDate').val();
+                            console.log(datestart);
+
+                            if (!datestart) {
+                                alert("La fecha de inicio es obligatoria.");
+                                return;
+                            }
+
+                            // Verificar si al menos uno de los filtros está seleccionado
+                                if (!category && !partnumber && !base && !program && !molding && !gap && !connector && !Heater && !NTC && !Inside && !Outside && !Guard && !ElectricTest) {
+                                // Mostrar alerta al usuario
+                                alert("Debe proporcionar al menos un filtro para exportar a Excel.");
+                                return; // Salir de la función sin realizar la solicitud AJAX
+                            }
+                            Swal.fire({
+                                    title: 'Generando archivo...',
+                                    text: 'Por favor espere mientras se genera el Excel.',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+                            if (category === "Base") {
+                                
+                                // Acción para BASE
+                                $.ajax({
+                                    url: '/RejectionMaterial/ExportToExcel',
+                                    type: 'GET',
+                                    data: {
+                                        category, program, partnumber, base, molding, gap,
+                                        connector, Heater, NTC, Inside, Outside, Guard, ElectricTest,datestart, dateend
+                                    },
+                                    xhrFields: {
+                                        responseType: 'blob'
+                                    },
+                                    success: function (response) {
+                                        setTimeout(function () {
+                                            Swal.close();
+
+                                            if (response && response.size > 0) {
+                                                var blob = response;
+                                                var now = new Date();
+                                                var formattedDate =
+                                                    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                                                    String(now.getDate()).padStart(2, '0') + '-' +
+                                                    String(now.getFullYear()).slice(-2) + '_' +
+                                                    String(now.getHours()).padStart(2, '0') + '-' +
+                                                    String(now.getMinutes()).padStart(2, '0');
+                                                var fileName = 'basereport_' + formattedDate + '.xlsx';
+                                                var link = document.createElement('a');
+                                                link.href = window.URL.createObjectURL(blob);
+                                                link.download = fileName;
+                                                link.click();
+                                            } else {
+                                                Swal.fire('Sin datos', 'No se encontraron datos para exportar.', 'info');
+                                            }
+                                        }, 1000);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error al exportar a Excel:', error);
+                                        alert("Ocurrió un error al exportar los datos. Inténtalo nuevamente.");
+                                    }
+                                });
+
+                            } else if (category === "FINISHEDGOOD") {
+
+                                
+                                // Acción diferente para VOLANTE FORRADO
+                                $.ajax({
+                                    url: '/RejectionMaterial/ExportToExceFinishgoodl', // otra acción en el controlador
+                                    type: 'GET',
+                                    data: {
+                                        category, program, partnumber, base, molding, gap,
+                                        connector, Heater, NTC, Inside, Outside, Guard, ElectricTest,datestart, dateend
+                                    },
+                                    xhrFields: {
+                                        responseType: 'blob'
+                                    },
+                                    success: function (response) {
+
+                                        
+                                        setTimeout(function () {
+                                            Swal.close();
+
+                                            if (response && response.size > 0) {
+                                                var blob = response;
+                                                var now = new Date();
+                                                var formattedDate =
+                                                    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                                                    String(now.getDate()).padStart(2, '0') + '-' +
+                                                    String(now.getFullYear()).slice(-2) + '_' +
+                                                    String(now.getHours()).padStart(2, '0') + '-' +
+                                                    String(now.getMinutes()).padStart(2, '0');
+                                                var fileName = 'finishgoodreport_' + formattedDate + '.xlsx';
+
+                                                var link = document.createElement('a');
+                                                link.href = window.URL.createObjectURL(blob);
+                                                link.download = fileName;
+                                                link.click();
+                                            } else {
+                                                Swal.fire('Sin datos', 'No se encontraron datos para exportar.', 'info');
+                                            }
+                                        }, 1000);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error al exportar volante forrado:', error);
+                                        alert("Ocurrió un error al exportar los datos de volante. Inténtalo nuevamente.");
+                                    }
+                                 });
+
+                            } else {
+                                    // Categoría desconocida o no soportada
+                                    alert("Categoría no soportada para exportar.");
+                            }
+                            
+                        }
+                        },
+                             {
+            text: 'Buscar',
+            className: 'btn btn-secondary btn-date-picker',
+            action: function (e, dt, node, config) {
+                $('#SearchModal').modal('show');
+            }
+        },
+
+            ],
+                columns: [
+            { data: 'category' },
+            { data: 'program' },
+            { data: 'partnumber' },
+            { data: 'base' },
+            {
+                data: 'connector',
+                render: function (data, type, row) {
+                    return data === null || data === '' ? 'N/A' : data;
+                }
+            },
+            {
+                data: 'molding',
+                render: function (data, type, row) {
+                    return data === null || data === '' ? 'N/A' : data;
+                }
+            },
+            {
+                data: 'gap',
+                render: function (data, type, row) {
+                    return data === null || data === '' ? 'N/A' : data;
+                }
+            },
+            { data: 'heater' },
+            { data: 'ntc' },
+            { data: 'inside' },
+            { data: 'outside' },
+            { data: 'guard' },
+            {
+                data: 'rejectionDate',
+                render: function (data, type, row) {
+                if (type === 'display' && data) {
+                    const date = new Date(data);
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getFullYear();
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    return `${month}/${day}/${year} ${hours}:${minutes}`;
+                }
+                    return data;
+                }
+            }
+        ]
+        });
+        const showAlert = (icon, title, text) => {
+            Swal.fire({
+                icon, title, text, showConfirmButton: false, timer: 2000, customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    htmlContainer: 'custom-swal-content',
+                    confirmButton: 'custom-swal-button'
+                }
+            });
+        }
+
+
+        $('#applyDateRange').click(function () {
+
+            const dateIntoWarehouse = $('#startDate').val();
+            const dateOutoWarehouse = $('#endDate').val();
+          
+            // Agregar una clase de error si se están aplicando filtros
+            $('.btn-date-picker').addClass('btn-danger');
+
+            // Recargar la tabla con los filtros aplicados
+            table.ajax.reload();
+
+            // Cerrar el modal de filtros
+            $('#FilterModal').modal('hide');
+        });
+
+        // Limpia los filtros
+        $('#clearDateRange').click(function () {
+            // Limpia los valores de los campos de entrada
+            $('#CategorySelect').val('');
+            $('#ProgramSelect').val('');
+            $('#ElectricTestSelect').val('');
+            $('#PartNumberIn').val('');
+            $('#BaseIn').val('');
+            $('#MoldingSelect').val('');
+            $('#GAPSelect').val('');
+            $('#ConectorSelect').val('');
+
+            $('#HeaterSelect').val('');
+            $('#NTCSelect').val('');
+            $('#InsideSelect').val('');
+            $('#OutsideSelect').val('');
+            $('#GuardSelect').val('');
+            $('#startDate').val('');
+            $('#endDate').val('');
+
+
+            // Elimina la clase de error de los botones
+            $('.btn-date-picker').removeClass('btn-danger');
+
+            // Recargar la tabla sin filtros
+            table.ajax.reload();
+
+            // Cerrar el modal de filtros
+            $('#FilterModal').modal('hide');
+        });
+
+                $('#btnSearchBase').click(function () {
+            const baseNumber = $('#searchBaseInput').val().trim();
+
+            if (!baseNumber) {
+                alert('Ingrese un número de base.');
+                return;
+            }
+
+            // Limpiamos y ocultamos mensajes antes de la consulta
+            $('#searchResult').hide().empty();
+            $('#noResultMsg').hide();
+
+            $.get(`/RejectionMaterial/GetByBase?value=${baseNumber}`, function (data) {
+                if (data && data.length > 0) {
+                    const item = data[0]; // Solo el primer resultado
+
+                    const labels = {
+                        Id: "ID",
+                        Program: "Programa",
+                        Base: "Base",
+                        Heater: "Calentador",
+                        Ntc: "NTC",
+                        Inside: "Interior",
+                        Outside: "Exterior",
+                        Guard: "Guardia",
+                        Molding: "Moldeo",
+                        Gap: "Espaciado",
+                        Connector: "Conector",
+                        RejectionDate: "Fecha de Rechazo"
+                    };
+
+                            let html = '<div class="row">';
+        for (const [key, value] of Object.entries(item)) {
+            html += `
+                <div class="col-md-4 fw-bold">${labels[key] || key}:</div>
+                <div class="col-md-8 mb-2">${value ?? ''}</div>
+            `;
+        }
+        html += `
+            <div class="col-12 text-center mt-3">
+                <button id="btnDeleteRecord" class="btn btn-danger" data-id="${item.Id}">
+                     Eliminar
+                </button>
+            </div>
+        `;
+        html += '</div>';
+
+
+                    $('#searchResult').html(html).show();
+                } else {
+                    $('#noResultMsg').show();
+                }
+            }).fail(function (xhr) {
+                $('#searchResult').hide();
+                $('#noResultMsg').html(`Error al cargar datos: ${xhr.statusText}`).show();
+            });
+        });
+
+
+                $(document).on('click', '#btnDeleteRecord', function () {
+            const baseNumber = $('#searchBaseInput').val().trim();
+
+            if (!baseNumber) {
+                Swal.fire('Error', 'Ingresa un número de base válido.', 'warning');
+                return;
+            }
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/RejectionMaterial/Delete?value=${baseNumber}`,
+                        type: 'DELETE',
+                        success: function () {
+                            Swal.fire({
+                                title: '¡Eliminado!',
+                                text: 'El registro ha sido eliminado.',
+                                icon: 'success'
+                            }).then(() => {
+                                // Después de cerrar el Swal de éxito:
+                                $('#searchResult').empty().hide();
+                                $('#noResultMsg').hide();
+
+                                if (typeof table !== 'undefined') {
+                                    table.ajax.reload();
+                                }
+
+                                $('#searchBaseInput').val('').focus(); // ✅ Aquí sí hace focus
+                            });
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'No se pudo eliminar el registro.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+
+
+
+       
+
+
+
+
+
+    </script>
+
+}

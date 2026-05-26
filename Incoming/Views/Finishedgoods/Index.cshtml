@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Incoming.Models.Finishedgood>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Program)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Partnumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Base)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Heater)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ntc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Inside)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Outside)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Guard)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RejectionDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Program)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Partnumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Base)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Heater)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ntc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Inside)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Outside)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guard)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RejectionDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

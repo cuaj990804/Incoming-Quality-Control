@@ -1,0 +1,460 @@
+﻿@model IEnumerable<Incoming.Models.Rejection>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Rechazos</h1>
+
+
+<table class="table table-hover" id="DataTable">
+    <thead>
+        <tr>
+            <th>
+                Programa
+            </th>
+            <th>
+                Base
+            </th>
+            <th>
+                Moldeo
+
+            </th>
+            <th>
+                Gap
+            </th>
+            <th>
+                Conector
+            </th>
+            <th>
+                Heater
+            </th>
+            <th>
+                Ntc
+            </th>
+            <th>
+                Inside
+            </th>
+            <th>
+                Outside
+            </th>
+            <th>
+                Guard
+            </th>
+            
+            <th>
+                Fecha
+            </th>
+            <th>
+                Hora
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+
+<div class="modal fade" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="DatePickerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DatePickerModalLabel">Búsqueda avanzada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <div class="form-group">
+                        <label for="Program">Nombre programa:</label>
+                        <select id="ProgramSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="EJ">EJ</option>
+                            <option value="KX">KX</option>
+                            <option value="LB">LB</option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label for="Base">Numero de Base:</label>
+                        <input type="text" class="form-control" id="BaseIn">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="Molding">Moldeo:</label>
+                        <select id="MoldingSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="GAP">GAP:</label>
+                        <select id="GAPSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Connector">Conector</label>
+                        <select id="ConectorSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="DEFECT">Defecto</option>
+                            <option value="OK">Ok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Heater">Heater:</label>
+                        <input type="text" class="form-control" id="HeaterIn">
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="NTC">NTC:</label>
+                        <input type="text" class="form-control" id="NTCIn">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="INSIDE">INSIDE:</label>
+                        <input type="text" class="form-control" id="InsideIn">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="OUTSIDE">OUTSIDE:</label>
+                        <input type="text" class="form-control" id="OutsideIn">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="GUARD">GUARD:</label>
+                        <input type="text" class="form-control" id="GuardIn">
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="DateIntoWarehouse">Fecha</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type="date" class="form-control" id="startDate">
+                            </div>
+                            <div class="col">
+                                <input type="date" class="form-control" id="endDate">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="clearDateRange">Limpiar Filtros</button>
+                <button type="button" class="btn btn-primary" id="applyDateRange">Aplicar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+
+    <script>
+        $(document).ready(function () {
+            let currentEditId = null; // Variable para almacenar el ID
+            function checkOverflow(value) {
+                // Si el valor es null, undefined o vacío → "overflow"
+                if (value === null || value === undefined || value === "") {
+                    return '<span class="text-danger">overflow</span>';
+                }
+
+                // Convertir a string para validaciones
+                const strValue = String(value).trim().toUpperCase();
+
+                // Si es "OK" o "N/A" → mostrar valor original
+                if (strValue === "OK" || strValue === "N/A") {
+                    return value;
+                }
+
+                // Si es un número (ej: "123", "-45.67") → mostrar valor original
+                if (/^-?\d+\.?\d*$/.test(strValue)) {
+                    return value;
+                }
+
+                // Cualquier otro caso → "overflow"
+                return '<span class="text-danger">OVERFLOW</span>';
+            }
+            let table = $('#DataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                order: [[9, 'desc']],
+                "pageLength": 15,
+                "searching": false,
+                "dom": 'Bfrtip',
+                searching: false,
+                ajax: {
+                    url: '/Rejections/GetTable',
+                    type: 'POST',
+                    data: function (d) {
+                        // Recoger los valores de los filtros aplicados
+                        d.program = $('#ProgramSelect').val(); // Filtro por "Nombre del residuo"
+                        d.base = $('#BaseIn').val(); // Filtro por "Nombre del residuo en GDI"
+                        d.molding = $('#MoldingSelect').val(); // Filtro por "No. parte"
+                        d.gap = $('#GAPSelect').val(); // Filtro por "Programa"
+                        d.connector = $('#ConectorSelect').val(); // Filtro por "Área en GDI"
+                        d.Heater = $('#HeaterIn').val(); // Filtro por "Forma de almacenamiento"
+                        d.NTC = $('#NTCIn').val(); 
+                        d.Inside = $('#InsideIn').val();
+                        d.Outside = $('#OutsideIn').val();
+                        d.Guard = $('#GuardIn').val();
+                        d.startDate = $('#startDate').val();
+                        d.endDate = $('#endDate').val();
+
+                    }
+                },
+                "buttons": [
+                    {
+                        text: 'Filtro',
+                        className: 'btn btn-secondary btn-date-picker',
+                        action: function (e, dt, node, config) {
+                            $('#FilterModal').modal('show');
+                        }
+                    },
+                    {
+                        text: 'Excel',
+                        className: 'btn btn-success',
+                        action: function (e, dt, node, config) {
+                            // Obtener valores de los filtros del modal
+                            const program = $('#ProgramSelect').val();
+                            const base = $('#BaseIn').val();
+                            const molding = $('#MoldingSelect').val();
+                            const gap = $('#GAPSelect').val();
+                            const connector = $('#ConectorSelect').val();
+                            const heater = $('#HeaterIn').val();
+                            const ntc = $('#NTCIn').val();
+                            const inside = $('#InsideIn').val();
+                            const outside = $('#OutsideIn').val();
+                            const guard = $('#GuardIn').val();
+                            const startDate = $('#startDate').val();
+                            const endDate = $('#endDate').val();
+
+                            // Validar que al menos un filtro esté aplicado
+                            const allEmpty = !program && !base && !molding && !gap && !connector &&
+                                !heater && !ntc && !inside && !outside && !guard &&
+                                !startDate && !endDate;
+
+                            if (allEmpty) {
+                                alert("Debe aplicar al menos un filtro para exportar a Excel.");
+                                return;
+                            }
+
+                            // Enviar solicitud al servidor
+                            $.ajax({
+                                url: '/Rejections/ExportToExcel',  // Ajustar ruta según tu controlador
+                                type: 'GET',
+                                data: {
+                                    program: program,
+                                    base: base,
+                                    molding: molding,
+                                    gap: gap,
+                                    connector: connector,
+                                    heater: heater,
+                                    ntc: ntc,
+                                    inside: inside,
+                                    outside: outside,
+                                    guard: guard,
+                                    startDate: startDate,
+                                    endDate: endDate
+                                },
+                                xhrFields: {
+                                    responseType: 'blob'
+                                },
+                                success: function (response) {
+                                    const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                                    const link = document.createElement('a');
+                                    link.href = window.URL.createObjectURL(blob);
+                                    link.download = 'Rechazos.xlsx';
+                                    link.click();
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al exportar:', error);
+                                    alert("Error al generar el archivo Excel.");
+                                }
+                            });
+                        },
+                        
+                    }
+                    
+                   
+                    
+                ],
+                columns: [
+                    { data: 'program' },
+                    { data: 'base'},
+                    { data: 'molding' },
+                    { data: 'gap' },
+                    { data: 'connector'},
+                    { data: 'heater'},
+                    { data: 'ntc'},
+                    { data: 'inside',
+                        render: checkOverflow
+                    },
+                    { data: 'outside',
+                        render: checkOverflow
+                    },
+                    { data: 'guard',
+                        render: checkOverflow
+                    },
+                    {
+                        data: 'rejectionDate',
+                        render: function (data, type, row) {
+                            if (type === 'display' && data) {
+                                const date = new Date(data);
+                                // Formato mmddyyyy
+                                const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-11
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const year = date.getFullYear();
+                                return `${month}/${day}/${year}`;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'rejectionDate',
+                        render: function (data, type, row) {
+                            if (type === 'display' && data) {
+                                const date = new Date(data);
+                                // Formato 24 horas: HH:mm
+                                const hours = String(date.getHours()).padStart(2, '0'); // 00-23
+                                const minutes = String(date.getMinutes()).padStart(2, '0'); // 00-59
+                                return `${hours}:${minutes}`;
+                            }
+                            return data;
+                        }
+                    },
+                  
+                    
+                ],
+
+            });
+            $('#applyDateRange').click(function () {
+
+                const dateIntoWarehouse = $('#DateIntoWarehouse').val(); // Obtiene el valor del campo "Fecha de ingreso al almacén"
+                const dateOutoWarehouse = $('#DateOutoWarehouse').val(); // Obtiene el valor del campo "Fecha de salida del almacén"
+
+                // Agregar una clase de error si se están aplicando filtros
+                $('.btn-date-picker').addClass('btn-danger');
+
+                // Recargar la tabla con los filtros aplicados
+                table.ajax.reload();
+
+                // Cerrar el modal de filtros
+                $('#FilterModal').modal('hide');
+            });
+
+            // Limpia los filtros
+            $('#clearDateRange').click(function () {
+                // Limpia los valores de los campos de entrada
+                $('#ProgramSelect').val('');
+                $('#BaseIn').val('');
+                $('#MoldingSelect').val('');
+                $('#GAPSelect').val('');
+                $('#ConectorSelect').val('');
+                $('#HeaterIn').val('');
+                $('#NTCIn').val('');
+                $('#InsideIn').val('');
+                $('#OutsideIn').val('');
+                $('#GuardIn').val('');
+                $('#startDate').val('');
+                $('#endDate').val('');
+
+                // Elimina la clase de error de los botones
+                $('.btn-date-picker').removeClass('btn-danger');
+
+                // Recargar la tabla sin filtros
+                table.ajax.reload();
+
+                // Cerrar el modal de filtros
+                $('#FilterModal').modal('hide');
+            });
+            $(document).on('click', '.details-btn', function () {
+                currentEditId = $(this).data('id');
+                $.get('@Url.Action("Details", "NonHazardous")', { id: currentEditId }, function (data) {
+                    $('#ModalBody').html(data);
+                    $('#ModalTitle').text('Detalles');
+                    $('#CreateModal').modal('show');
+                }).fail(function () {
+                    alert("Error al cargar los detalles del cliente.");
+                });
+            });
+
+            $('#saveEditBtn').click(function () {
+                console.log(currentEditId);
+                $.get('@Url.Action("Edit", "NonHazardous")', { id: currentEditId }, function (data) {
+                    $('#EditModalBody').html(data);
+                    $('#ModalTitle').text('Editar');
+                    $('#EditModal').modal('show');
+                }).fail(function () {
+                    alert("Error al cargar los detalles del cliente.");
+                });
+
+            });
+
+            $('#deleteBtn').click(function () {
+
+
+                if (confirm('¿Estás seguro de que deseas eliminar este registro?')) {
+                    $.ajax({
+                        url: `/NonHazardous/Delete/${currentEditId}`,
+                        type: 'POST',
+                        success: function (result) {
+                            if (result.success) {
+                                alert('Registro eliminado exitosamente.');
+                                window.location.href = "/NonHazardous/Index";
+                                //$('#DataTable').DataTable().ajax.reload();
+                            } else {
+                                alert('Error al eliminar: ' + result.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Ocurrió un error en la solicitud.');
+                        }
+                    });
+                }
+
+
+            });
+
+
+            $('#editForm').on('submit', function (e) {
+                e.preventDefault(); // Evita el envío tradicional
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#EditModal').modal('hide');
+                            location.reload(); // Actualiza la página
+                        } else {
+                            $('#EditModalBody').html(response); // Muestra errores
+                        }
+                    },
+                    error: function () {
+                        alert('Error al guardar los cambios');
+                    }
+                });
+            });
+
+
+
+
+        });
+    </script>
+}

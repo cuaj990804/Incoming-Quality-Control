@@ -1,0 +1,201 @@
+﻿@model IEnumerable<Incoming.Models.Defect>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Defectos</h1>
+
+<div>
+    <button class=" btn btn-success" id="AddModalButton">
+        Agregar
+    </button>
+</div>
+<table class="table" id="DataTable">
+    <thead>
+        <tr>
+            <th>
+                Defecto
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr data-id="@item.Id">
+            <td>
+                @Html.DisplayFor(modelItem => item.DefectName)
+            </td>
+            <td>
+                    
+                    <button class="btn btn-dark btn-edit">Editar</button>
+
+                    <button class="btn btn-danger btn-delete">Eliminar</button>
+
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreaterModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CreaterModalLabel">Agregar Defecto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <div class="form-group">
+                        <label for="DefectLabel">Nombre del defecto:</label>
+                        <input type="text" class="form-control" id="DefectIn">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="AddButton">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="EditModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CreaterModalLabel">Editar Defecto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="EditDefectId" />
+                    <div class="form-group">
+                        <label for="EditDefectLabel">Nombre del defecto:</label>
+                        <input type="text" class="form-control" id="EditDefectIn">
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="Editbutton">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        let table = $('#DataTable').DataTable({
+            "pageLength": 15,
+            "dom": 'frtip',
+            searching: false,
+        });
+
+        const showAlert = (icon, title, text) => {
+            Swal.fire({
+                icon, title, text, showConfirmButton: false, timer: 2000, customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    htmlContainer: 'custom-swal-content',
+                    confirmButton: 'custom-swal-button'
+                }
+            });
+        }
+        const showAlertError= (icon, title, text) => {
+        Swal.fire({
+            icon, title, text, showConfirmButton: true, customClass: {
+                popup: 'custom-swal-popup',
+                title: 'custom-swal-title',
+                htmlContainer: 'custom-swal-content',
+                confirmButton: 'custom-swal-button'
+            } });
+        }
+
+        // Mostrar modal de creación
+        $('#AddModalButton').click(function () {
+            $('#DefectIn').val('');
+            $('#CreateModal').modal('show');
+        });
+
+        // Crear por AJAX
+        $('#AddButton').click(function () {
+            let name = $('#DefectIn').val();
+            $.ajax({
+                url: '/Defects/CreateAjax',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ DefectName: name }),
+                success: function (res) {
+                    if (res.success) {
+                        showAlert('success', 'Éxito', 'Defecto agregado correctamente');
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        alert(res.message || 'Error al agregar');
+                    }
+                }
+            });
+        });
+
+        // Mostrar modal de edición
+        $(document).on('click', '.btn-edit', function () {
+            let row = $(this).closest('tr');
+            let id = row.data('id');
+            let name = row.find('td:first').text().trim();
+
+            $('#EditDefectIn').val(name);
+            $('#EditDefectId').val(id);
+            $('#EditModal').modal('show');
+        });
+
+        // Editar por AJAX
+        $('#Editbutton').click(function () {
+            let name = row.find('td:first').text().trim();
+            let id = $('#EditDefectId').val();
+
+            $.ajax({
+                url: '/Defects/EditAjax',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ Id: id, DefectName: name }),
+                success: function (res) {
+                    if (res.success) {
+                        showAlert('success', 'Éxito', 'Defecto editado correctamente');
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        alert(res.message || 'Error al editar');
+                    }
+
+                    
+                }
+            });
+        });
+
+        // Eliminar por AJAX
+        $(document).on('click', '.btn-delete', function () {
+            if (!confirm('¿Estás seguro de que deseas eliminar este defecto?')) return;
+
+            let id = $(this).closest('tr').data('id');
+
+            $.ajax({
+                url: '/Defects/DeleteAjax',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(id),
+                success: function (res) {
+                    if (res.success) {
+                        showAlert('success', 'Éxito', 'Defecto eliminado correctamente');
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        alert(res.message || 'Error al eliminar');
+                    }
+                 
+                    
+                }
+            });
+        });
+    </script>
+
+}
+

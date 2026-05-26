@@ -1,0 +1,368 @@
+﻿
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/incoming/style.css" asp-append-version="true" />
+
+
+
+
+
+<div class="main-container">
+    <div class="parent">
+        <div class="div1">
+            <div class="menu">
+                <div class="logo-container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="/assets/Logo-GDIPasubio.png" alt="Logo" class="logo-img" />
+                    </a>
+                </div>
+                <div>
+                
+                    <div class="mb-2">
+                        <label><strong>Contenedor en curso:</strong></label>
+                        <div style="display: flex; gap: 8px;">
+                            <label id="ProgramLabel"></label>
+                            <label id="CointainerCountLabel"></label>
+                        </div>
+                    </div>
+                    <div class="rejection">
+                        <label><strong>Bases rechazadas:</strong></label>
+                        <div id="rejection-list"></div> <!-- Aquí se insertarán los labels dinámicamente -->
+                    </div>
+
+                </div>
+                <div>
+
+                    <input class="btn btn-success btn-containers" type="button" id="openSelectActionModal" value="Opciones">
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="div2">
+            <div class="parameters">
+                <div class="scanner">
+                    <!-- Asegúrate que tu HTML tenga el placeholder=" " -->
+                    <div class="select-contain">
+                    
+                        <select id="ProgramSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            @foreach (var part in ViewBag.ProgramListIncoming as List<string>)
+                            {
+                                <option value="@part">@part</option>
+                            }
+
+                        </select>
+                    </div>
+          
+                    <div class="input-contain">
+                        <input type="search"
+                               id="Base"
+                               name="fname"
+                               autocomplete="off"
+                               placeholder=" " 
+                                />
+
+                        <label class="placeholder-text">
+                            Escanear Base
+                        </label>
+                    </div>
+
+
+                </div>
+
+                <div id="defects-container">
+                    <!-- Checkboxes de defectos se insertarán aquí -->
+                    <div class="table-container">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Prueba</th>
+                                    <th>Mínimo</th>
+                                    <th>Máximo</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody><!-- Contenido dinámico --></tbody>
+                        </table>
+                        
+                    </div>
+                    <div class="button-container">
+                        <input id="submit-button" type="submit" class="btn btn-primary" value="Enviar" style="display: none;">
+                    </div>
+                </div>
+                
+
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+<!-- Modal de Selección -->
+<div class="modal fade ContainerModal" id="SelectActionModal" tabindex="-1" role="dialog" aria-labelledby="SelectActionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">¿Qué deseas hacer?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="d-flex flex-row">
+
+                    <button class="btn btn-success m-2 btn-containers" id="openContainerModal">Agregar Contenedor</button>
+
+                    <button type="button" class="btn btn-warning m-2 btn-containers" id="OpenEditContainer">Editar Contenedor</button>
+                    <button type="button" class="btn btn-dark m-2 btn-containers" id="OpenSteeringWheelModal">Registrar Volante Forrado</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Agregar contenedor -->
+<div class="modal fade ContainerModal" id="ContainerModal" tabindex="-1" role="dialog" aria-labelledby="ContainerModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-modal" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Agregar Contenedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="ProgramModal">Programa</label>
+                        <select id="ProgramModalSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            @foreach (var part in ViewBag.ProgramListIncoming as List<string>)
+                            {
+                                <option value="@part">@part</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="QuantityModalContainer">Cantidad</label>
+                        <input class="form-control" id="QuantityContainerIn" type="number" />
+                    </div>
+                </form>
+            </div>
+
+   
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="AddContainer">Agregar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Editar contenedor -->
+<div class="modal fade ContainerModal" id="EditContainerModal" tabindex="-1" role="dialog" aria-labelledby="ContainerModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Editar Contenedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+
+
+                    <div class="form-group">
+                        <label for="EditProgramModal">Programa</label>
+                        <select id="EditProgramModalSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            @foreach (var part in ViewBag.ProgramList as List<string>)
+                            {
+                                <option value="@part">@part</option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="EditQuantityModalContainer">Cantidad</label>
+                        <input class="form-control" id="EditQuantityContainerIn" type="number" />
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="EditContainer">Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Base Forrada contenedor -->
+<div class="modal fade ContainerModalXL" id="SteeringWheelContainerModal" tabindex="-1" role="dialog" aria-labelledby="ContainerModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Registrar Volante Forrado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="d-flex flex-row gap-3">
+                        <div class="form-group">
+                            <label for="JulianLabelModalContainer">Etiqueta Juliana</label>
+                            <input class="form-control form-control-lg" id="JulianContainerIn" type="text" />
+                        </div>
+                        <div class="form-group">
+                            <label for="BaseLabelModalContainer">Base</label>
+                            <input class="form-control form-control-lg" id="BaseContainerIn" type="text" />
+                        </div>
+                    </div>
+
+                    <div id="tableModal" class="table"></div>
+
+
+
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="AddSteeringWheel">Registrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edición de Defectos -->
+<div class="modal fade" id="EditDefectModal" tabindex="-1" role="dialog" aria-labelledby="EditDefectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditDefectModalLabel">Editar Defecto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editDefectForm">
+                    <input type="hidden" id="editDefectId" />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="editProgram">Programa</label>
+                                <input type="text" class="form-control" id="editProgram" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="editBase">Base</label>
+                                <input type="text" class="form-control" id="editBase" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="editMolding">Moldeo</label>
+                                <input type="text" class="form-control" id="editMolding" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="editGap">GAP</label>
+                                <input type="text" class="form-control" id="editGap" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="editConnector">Conector</label>
+                                <input type="text" class="form-control" id="editConnector" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="editHeater">Heater</label>
+                                <input type="text" class="form-control" id="editHeater" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="editNtc">NTC</label>
+                                <input type="text" class="form-control" id="editNtc" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="editInside">Inside</label>
+                                <input type="text" class="form-control" id="editInside" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="editOutside">Outside</label>
+                                <input type="text" class="form-control" id="editOutside" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="editGuard">Guard</label>
+                                <input type="text" class="form-control" id="editGuard" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveDefectChanges">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" src="/lib/sweetalert2.all.min.js"></script>
+<script type="module" src="/js/incoming/main.js" asp-append-version="true"></script>
+<script>
+    async function searchLabel() {
+        const partnumber = document.getElementById('partnumberInput').value;
+        const apiUrl = `http://192.168.1.1:9090/api/labels`;
+
+        try {
+            const response = await axios.get(apiUrl, {
+                params: {
+                    partnumber: partnumber
+                }
+            });
+
+            // Procesar response.data igual que en el ejemplo anterior
+
+        } catch (error) {
+            const message = error.response?.data?.message || error.message;
+            console.error("Error detallado:", error.response?.data);
+            alert(message);
+        }
+    }
+</script>

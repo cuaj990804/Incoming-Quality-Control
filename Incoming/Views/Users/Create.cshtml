@@ -1,0 +1,95 @@
+﻿@model Incoming.Models.User
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = null;
+}
+
+
+<div>
+    <form asp-action="Create" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="EmployeeNumber" class="control-label"># Empleado</label>
+            <input asp-for="EmployeeNumber" class="form-control" />
+            <span asp-validation-for="EmployeeNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FirstName" class="control-label">Nombre</label>
+            <input asp-for="FirstName" class="form-control" style="text-transform: uppercase;" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName" class="control-label">Apellido</label>
+            <input asp-for="LastName" class="form-control" style="text-transform: uppercase;" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Area" class="control-label">Área</label>
+            <select asp-for="Area" id="RolSelect" class="form-control">
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="IT">TI</option>
+                <option value="PRODUCTION">PRODUCCION</option>
+                <option value="QUALITY">CALIDAD</option>
+
+            </select>
+            <span asp-validation-for="Area" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-4">
+            <label asp-for="UserRole" class="control-label">Rol</label>
+            <select asp-for="UserRole" id="RolSelect" class="form-control">
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="ADMINISTRATOR">ADMINISTRADOR</option>
+                <option value="SUPERVISOR">SUPERVISOR</option>
+                <option value="USER">USUARIO</option>
+                
+            </select>
+            <span asp-validation-for="UserRole" class="text-danger"></span>
+            
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Crear" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Función para convertir a mayúsculas
+            function convertToUpper(inputElement) {
+                inputElement.value = inputElement.value.toUpperCase();
+            }
+
+            // Capturar elementos
+            const firstNameInput = document.querySelector('input[name="FirstName"]');
+            const lastNameInput = document.querySelector('input[name="LastName"]');
+
+            // Convertir valores iniciales (si existen)
+            if(firstNameInput) convertToUpper(firstNameInput);
+            if(lastNameInput) convertToUpper(lastNameInput);
+
+            // Eventos para conversión en tiempo real
+            if(firstNameInput) {
+                firstNameInput.addEventListener('input', () => convertToUpper(firstNameInput));
+                firstNameInput.addEventListener('blur', () => convertToUpper(firstNameInput));
+            }
+
+            if(lastNameInput) {
+                lastNameInput.addEventListener('input', () => convertToUpper(lastNameInput));
+                lastNameInput.addEventListener('blur', () => convertToUpper(lastNameInput));
+            }
+
+            // Validación adicional al enviar el formulario
+            document.querySelector('form')?.addEventListener('submit', function() {
+                if(firstNameInput) convertToUpper(firstNameInput);
+                if(lastNameInput) convertToUpper(lastNameInput);
+            });
+        });
+    </script>
+  
+}

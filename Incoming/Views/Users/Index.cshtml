@@ -1,0 +1,140 @@
+﻿@model IEnumerable<Incoming.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Usuarios</h1>
+
+<p>
+    <button class="btn btn-success" id="openCreateModal" asp-action="Create">Agregar nuevo usuario</button>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                # Empleado
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Apellido
+            </th>
+            <th>
+                Area
+            </th>
+            <th>
+                Rol
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Area)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserRole)
+            </td>
+            <td>
+                    <button class="btn btn-primary openEditModal" data-id="@item.Id">Editar</button>
+
+                    <button class="btn btn-danger deleteUserBtn" data-id="@item.Id" data-name="@item.FirstName">Eliminar</button>
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="DatePickerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DatePickerModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+               
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#openCreateModal').click(function () {
+                $.get('/Users/LoadCreateForm', function (html) {
+                    $('#Modal .modal-title').text('Nuevo Usuario');
+                    $('#Modal .modal-body').html(html);
+                    $('#Modal').modal('show');
+                });
+            });
+
+             $(document).on('click', '.openEditModal', function () {
+                const userId = $(this).data('id');
+                $.get('/Users/LoadEditForm', { id: userId }, function (html) {
+                    $('#Modal .modal-title').text('Editar Usuario');
+                    $('#Modal .modal-body').html(html);
+                    $('#Modal').modal('show');
+                });
+            });
+            $(document).on('click', '.deleteUserBtn', function () {
+                const userId = $(this).data('id');
+                const userName = $(this).data('name');
+
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: `Vas a eliminar a ${userName}. Esta acción no se puede deshacer.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/Users/DeleteConfirmed/${userId}`,
+                            type: 'POST',
+                            success: function () {
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'El usuario ha sido eliminado.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload(); // o actualizar solo la tabla con AJAX si prefieres
+                                });
+                            },
+                            error: function () {
+                                Swal.fire(
+                                    'Error',
+                                    'Ocurrió un problema al eliminar el usuario.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+        });
+
+        });
+    </script>
+}
+

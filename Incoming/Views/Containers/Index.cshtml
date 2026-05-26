@@ -1,0 +1,378 @@
+﻿@model IEnumerable<Incoming.Models.Container>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Contenedores</h1>
+
+
+</p>
+<table class="table" id="DataTable">
+    <thead>
+        <tr>
+            <th>
+                Programa
+            </th>
+            <th>
+                Cantidad
+            </th>
+            <th>
+                Piezas Particiales
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Fecha de inicio
+            </th>
+            <th>
+                Fecha de termino
+            </th>
+            <th>
+
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+
+    </tbody>
+</table>
+
+
+<div class="modal fade" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="DatePickerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DatePickerModalLabel">Búsqueda avanzada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="Program">Programa:</label>
+                        <select id="ProgramSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="EJ">EJ</option>
+                            <option value="KX">KX</option>
+                            <option value="LB">LB</option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label for="Quantity">Cantidad:</label>
+                        <input type="text" class="form-control" id="QuantityIn">
+
+                    </div>
+
+            <div class="form-group">
+                <label for="Status">Estado:</label>
+                <select id="StatusSelect" class="form-control">
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="OPEN">Abierto</option>
+                    <option value="CLOSE">Cerrado</option>
+                </select>
+            </div>
+            
+
+
+            <div class="form-group">
+                <label for="DateContainer">Fecha</label>
+                <div class="row">
+                    <div class="col">
+                        <input type="date" class="form-control" id="startDate">
+                    </div>
+                    <div class="col">
+                        <input type="date" class="form-control" id="endDate">
+                    </div>
+                </div>
+            </div>                   
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="clearDateRange">Limpiar Filtros</button>
+                <button type="button" class="btn btn-primary" id="applyDateRange">Aplicar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Editar contenedor -->
+<div class="modal fade ContainerModal" id="EditContainerModal" tabindex="-1" role="dialog" aria-labelledby="ContainerModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Editar Contenedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="EditProgramModal">Programa</label>
+                        <input class="form-control" id="EditProgramContainerIn" type="text" disabled />
+
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label for="EditQuantityModalContainer">Cantidad</label>
+                        <input class="form-control" id="EditQuantityContainerIn" type="number" />
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Status">Estado</label>
+                        <select id="StatusEditSelect" class="form-control">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="OPEN">Abierto</option>
+                            <option value="CLOSE">Cerrado</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="endDate">Fecha de Cierre</label>
+                        <input type="date" class="form-control" id="endDateEdit"  />
+                    </div>
+                        
+
+                   
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="EditContainer">Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="module" src="/lib/sweetalert2.all.min.js"></script>
+    <script type="module" src="/js/incoming/ui.js" asp-append-version="true"></script>
+    <script>
+        let containerId; 
+
+        let table = $('#DataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [[5, 'desc']],
+            "pageLength": 15,
+            "searching": false,
+            "dom": 'Bfrtip',
+            searching: false,
+            ajax: {
+                url: '/Containers/SetTable',
+                type: 'POST',
+                data: function (d) {
+                    d.program = $('#ProgramSelect').val(); 
+                    d.quantity = $('#QuantityIn').val(); 
+                    d.status = $('#StatusSelect').val();
+                    d.dateStart = $('#startDate').val();
+                    d.dateEnd = $('#endDate').val();
+
+                }
+            },
+            "buttons":[
+                {
+                    text: 'Filtro',
+                    className: 'btn btn-secondary btn-date-picker',
+                    action: function (e, dt, node, config) {
+                        $('#FilterModal').modal('show');
+                    }
+                },
+
+            ],
+            columns: [{ data: 'program' },
+                        { data: 'quantity' },
+                        { data: 'partialCount' },
+                        {
+                            data: 'status',
+                            render: function (data, type, row) {
+                                return (data === "OPEN")
+                                    ? '<span class="badge bg-success text-white">ABIERTO</span>'
+                                    : '<span class="badge bg-dark text-white">CERRADO</span>';
+                            }
+                        },
+
+                        {
+                            data: 'dateStart',
+                            render: function (data, type, row) {
+                                if (type === 'display' && data) {
+                                    const date = new Date(data);
+                                    // Formato mmddyyyy
+                                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-11
+                                    const day = String(date.getDate()).padStart(2, '0');
+                                    const year = date.getFullYear();
+                                    return `${month}/${day}/${year}`;
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            data: 'dateEnd',
+                            render: function (data, type, row) {
+                                if (type === 'display' && data) {
+                                    const date = new Date(data);
+                                    // Formato mmddyyyy
+                                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-11
+                                    const day = String(date.getDate()).padStart(2, '0');
+                                    const year = date.getFullYear();
+                                    return `${month}/${day}/${year}`;
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            data: null,
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row) {
+                                return `
+                                <button class="btn btn-sm btn-warning btn-edit" data-id="${row.id}"  id="EditButton">
+                                     Editar
+                                </button>
+                               
+                            `;
+                            }
+                        }
+                       
+                        
+            ]
+        });
+        const showAlert = (icon, title, text) => {
+            Swal.fire({
+                icon, title, text, showConfirmButton: false, timer: 2000, customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    htmlContainer: 'custom-swal-content',
+                    confirmButton: 'custom-swal-button'
+                }
+            });
+        }
+
+
+   
+
+        
+       
+
+
+            
+
+        $('#applyDateRange').click(function () {
+
+            const dateIntoWarehouse = $('#dateStart').val(); // Obtiene el valor del campo "Fecha de ingreso al almacén"
+            const dateOutoWarehouse = $('#dateEnd').val(); // Obtiene el valor del campo "Fecha de salida del almacén"
+
+            // Agregar una clase de error si se están aplicando filtros
+            $('.btn-date-picker').addClass('btn-danger');
+
+            // Recargar la tabla con los filtros aplicados
+            table.ajax.reload();
+
+            // Cerrar el modal de filtros
+            $('#FilterModal').modal('hide');
+        });
+
+        // Limpia los filtros
+        $('#clearDateRange').click(function () {
+            // Limpia los valores de los campos de entrada
+            $('#ProgramSelect').val('');
+            $('#QuantityIn').val('');
+            $('#StatusSelect').val('');
+            $('#startDate').val('');
+            $('#endDate').val('');
+
+
+            // Elimina la clase de error de los botones
+            $('.btn-date-picker').removeClass('btn-danger');
+
+            // Recargar la tabla sin filtros
+            table.ajax.reload();
+
+            // Cerrar el modal de filtros
+            $('#FilterModal').modal('hide');
+        });
+
+        $('#DataTable tbody').on('click', '.btn-edit', function () {
+            containerId = $(this).data('id');
+            console.log(containerId);
+            $('#EditContainerModal').modal('show');
+
+            // Obtener ID del contenedor
+            
+
+            // Mostrar el modal
+            $('#EditContainerModal').modal('show');
+
+            // Solicitud AJAX para obtener los datos del contenedor
+            $.ajax({
+                url: `/Containers/GetContainerInfo/${containerId}`,
+                type: 'GET',
+                success: function (data) {
+                    // Llenar campos del modal con los datos obtenidos
+                    $('#EditProgramContainerIn').val(data.program);
+                    $('#EditQuantityContainerIn').val(data.quantity);
+                    $('#StatusEditSelect').val(data.status);
+                    if (data.dateEnd) {
+                        const parts = data.dateEnd.split('/'); // [MM, dd, yyyy]
+                        const formattedDate = `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+                        $('#endDateEdit').val(formattedDate);
+                    } else {
+                        $('#endDateEdit').val('');
+                    }
+
+
+                  
+
+                    
+                },
+                error: function () {
+                    alert("Error al obtener la información del contenedor.");
+                }
+            });
+
+        });
+        $('#EditContainer').click(function () {
+
+            const date = $('#endDateEdit').val();
+
+
+        
+
+            const updatedContainer = {
+                id: containerId,
+                quantity: parseInt($('#EditQuantityContainerIn').val()),
+                status: $('#StatusEditSelect').val(),
+                dateEnd: date
+            };
+
+            console.log('Objeto a enviar:', JSON.stringify(updatedContainer, null, 2));
+            $.ajax({
+                url: '/Containers/EditContainer',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedContainer),
+                success: function (response) {
+                    $('#EditContainerModal').modal('hide');
+                    $('#DataTable').DataTable().ajax.reload(null, false);
+                    showAlert('success', 'Éxito', 'Contenedor editado correctamente');
+       
+                },
+                error: function () {
+                    alert("Error al editar el contenedor.");
+                }
+            });
+        });
+
+
+
+
+
+    </script>
+
+}

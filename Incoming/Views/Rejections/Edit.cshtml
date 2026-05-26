@@ -1,0 +1,69 @@
+﻿@model Incoming.Models.Rejection
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Rejection</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Program" class="control-label"></label>
+                <input asp-for="Program" class="form-control" />
+                <span asp-validation-for="Program" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Base" class="control-label"></label>
+                <input asp-for="Base" class="form-control" />
+                <span asp-validation-for="Base" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Heater" class="control-label"></label>
+                <input asp-for="Heater" class="form-control" />
+                <span asp-validation-for="Heater" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ntc" class="control-label"></label>
+                <input asp-for="Ntc" class="form-control" />
+                <span asp-validation-for="Ntc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Inside" class="control-label"></label>
+                <input asp-for="Inside" class="form-control" />
+                <span asp-validation-for="Inside" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Outside" class="control-label"></label>
+                <input asp-for="Outside" class="form-control" />
+                <span asp-validation-for="Outside" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Guard" class="control-label"></label>
+                <input asp-for="Guard" class="form-control" />
+                <span asp-validation-for="Guard" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RejectionDate" class="control-label"></label>
+                <input asp-for="RejectionDate" class="form-control" />
+                <span asp-validation-for="RejectionDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

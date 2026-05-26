@@ -1,0 +1,584 @@
+/* style.css */
+/* -------------------------------------------------- */
+/* Estilos Generales */
+/* -------------------------------------------------- */
+:root {
+    --base-unit: 0.625rem; /* 10px para cálculos fáciles (1rem = 10px) */
+    --primary-color: #171717;
+    --secondary-color: #f8f9fa;
+    --accent-color: #212529;
+}
+
+html {
+    font-size: 62.5%; /* 1rem = 10px */
+}
+
+.main-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: beige;
+    display: flex;
+    overflow: hidden;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: 30rem 1fr; /* 300px */
+    width: 100%;
+    height: 100%;
+    min-width: 32rem; /* 320px */
+}
+
+/* Sección Izquierda (Menu) */
+.div1 {
+    background-color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    color: white;
+}
+
+    .div1 label {
+        font-size: 2.4rem; /* Tamaño aumentado e igualado */
+        display: block;
+    }
+
+.menu {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+    .menu > div:last-child { /* Contenedor del botón */
+        margin-top: auto; /* Empuja el botón hacia abajo */
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Opcional: línea separadora */
+    }
+
+.btn-danger {
+    width: 100%;
+    font-size: 1.5rem; /* Tamaño aumentado */
+    padding: 1.5rem 3rem !important; /* Más grande verticalmente */
+    margin: 2rem auto 0;
+    display: block;
+    transition: all 0.3s ease;
+    border-radius: 0.8rem; /* Esquinas más redondeadas */
+    letter-spacing: 0.05rem; /* Espaciado entre letras */
+}
+
+    /* Efecto hover para mejor interactividad */
+    .btn-danger:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.2);
+    }
+
+.btn-containers {
+    width: 100%;
+    font-size: 1.5rem; /* Tamaño aumentado */
+    padding: 1.5rem 3rem !important; /* Más grande verticalmente */
+    margin: 2rem auto 0;
+    display: block;
+    transition: all 0.3s ease;
+    border-radius: 0.8rem; /* Esquinas más redondeadas */
+    letter-spacing: 0.05rem; /* Espaciado entre letras */
+}
+
+    /* Efecto hover para mejor interactividad */
+    .btn-containers:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.2);
+    }
+
+.logo-container {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.logo-img {
+    max-height: 4.5rem; /* Mejor que vh para mantener proporción */
+    width: auto;
+    margin: 2rem 0;
+}
+
+/* Sección Derecha (Contenido Principal) */
+.div2 {
+    background-color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.parameters {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 2rem;
+}
+
+/* Checkboxes de defectos */
+.defects-checkboxes {
+    padding: 2rem;
+}
+
+.checkboxes-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4rem;
+    margin-top: 2.5rem;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--secondary-color);
+    padding: 1rem 1.5rem;
+    border-radius: 0.8rem;
+    border: 1px solid #dee2e6;
+    flex: 1 1 30rem; /* Responsivo por defecto */
+}
+
+.defect-checkbox {
+    width: 2.5rem;
+    height: 2.5rem;
+    accent-color: var(--primary-color);
+}
+
+.defect-label {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin: 0;
+}
+
+.defect-title {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    display: block;
+}
+
+.button-container {
+    margin-top: auto;
+    padding-top: 2rem;
+}
+
+/* Tabla de parámetros */
+.table-container {
+    margin-top: 1rem;
+    background: white;
+    border-radius: 0.8rem;
+    box-shadow: 0 0 1.5rem rgba(0,0,0,0.1);
+    padding: 2rem;
+    display: none;
+}
+
+    .table-container .input-value {
+        padding: 1rem 1.5rem;
+        font-size: 1.6rem; /* Unidad relativa */
+        min-height: 4.5rem; /* Altura mínima accesible */
+        width: 100%;
+        border: 0.2rem solid #ccc;
+        border-radius: 0.5rem;
+        background-color: var(--secondary-color);
+    }
+
+    .table-container .form-check-input {
+        width: 1.6em;
+        height: 1.6em;
+        margin-top: 0;
+        vertical-align: middle;
+    }
+
+.table {
+    width: 100%;
+    min-width: 60rem;
+    font-size: 1.6rem;
+    border-collapse: collapse;
+}
+
+    .table th {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 1.5rem;
+        text-align: left;
+    }
+
+    .table td {
+        padding: 1.2rem;
+        border-bottom: 0.1rem solid #ddd;
+        vertical-align: middle;
+    }
+.inputTableModal {
+    padding: 1rem 1.5rem;
+    font-size: 1.6rem; /* Unidad relativa */
+    min-height: 4.5rem; /* Altura mínima accesible */
+    width: 100%;
+    border: 0.2rem solid #ccc;
+    border-radius: 0.5rem;
+    background-color: var(--secondary-color);
+}
+/* Responsive Design */
+@media (max-width: 76.8rem) { /* 768px */
+    .parent {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    .checkboxes-container {
+        gap: 2rem;
+    }
+
+    .defect-checkbox {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .defect-label {
+        font-size: 1.6rem;
+    }
+
+    .defect-title {
+        font-size: 2rem;
+    }
+
+    .table {
+        min-width: 100%;
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 48rem) { /* 480px */
+    .checkboxes-container {
+        gap: 1.5rem;
+    }
+
+    .checkbox-wrapper {
+        flex-basis: 100%;
+    }
+
+    .defect-label {
+        font-size: 1.4rem;
+    }
+
+    .defect-title {
+        font-size: 1.8rem;
+    }
+}
+
+/* Inputs de escaneo */
+.scanner {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.input-contain {
+    position: relative;
+    width: 45%;
+    max-width: 40rem;
+    min-width: 25rem;
+    flex-grow: 1;
+}
+
+    .input-contain input {
+        width: 100%;
+        height: 5rem;
+        font-size: 1.8rem;
+        padding: 1rem 1.5rem;
+        border: 0.2rem solid var(--primary-color);
+        border-radius: 0.8rem;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+.placeholder-text {
+    position: absolute;
+    top: 50%;
+    left: 1.5rem;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    color: #666;
+    transition: all 0.3s;
+    pointer-events: none;
+    background: white;
+    padding: 0 0.5rem;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+input[type="submit"] {
+    font-size: 1.6rem;
+    padding: 1.5rem 3rem;
+    border-radius: 0.5rem;
+}
+
+.input-contain input:focus + .placeholder-text,
+.input-contain input:not(:placeholder-shown) + .placeholder-text {
+    top: 0;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+/* Reemplazar los estilos del input por el select */
+.select-contain {
+    position: relative;
+    width: 45%;
+    max-width: 40rem;
+    min-width: 25rem;
+    flex-grow: 1;
+}
+
+    .select-contain select {
+        width: 100%;
+        height: 5rem;
+        font-size: 1.8rem;
+        padding: 1rem 1.5rem;
+        border: 0.2rem solid var(--primary-color);
+        border-radius: 0.8rem;
+        background: white;
+ 
+        
+        transition: all 0.3s ease;
+    }
+
+   
+
+
+
+/* Media Queries Mejorados */
+@media (max-width: 76.8rem) {
+    .scanner {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .input-contain {
+        width: 90%;
+    }
+
+        .input-contain input {
+            font-size: 1.6rem;
+            height: 4.5rem;
+        }
+
+    .placeholder-text {
+        font-size: 1.6rem;
+    }
+
+    .input-contain input:focus + .placeholder-text,
+    .input-contain input:not(:placeholder-shown) + .placeholder-text {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 48rem) {
+    .input-contain input {
+        font-size: 1.4rem;
+        height: 4rem;
+    }
+
+    .placeholder-text {
+        font-size: 1.4rem;
+    }
+}
+
+.no-rejections {
+    color: #6c757d;
+    font-style: italic;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+/* -------------------------------------------------- */
+/* Sección de Lista de Rechazos */
+/* -------------------------------------------------- */
+/* Añade esto al final de tu CSS */
+#rejection-list {
+    font-size: 2.2rem; /* Tamaño aumentado en 20% */
+}
+
+.rejection-item {
+    font-size: 1.1em; /* 2.4rem en total */
+    margin: 1.5rem 0;
+}
+
+.program-name {
+    font-size: 1.1em; /* 2.6rem en total */
+    font-weight: 600;
+}
+
+.rejection-count {
+    font-size: 1.1em; /* 2.6rem en total */
+    padding: 0.3rem 1.2rem;
+}
+
+.no-rejections {
+    font-size: 1.8rem; /* Tamaño aumentado */
+}
+
+/* Aumentar tamaño general de la alerta */
+.custom-swal-popup {
+    font-size: 1.4em !important; /* Tamaño base más grande */
+    max-width: 80% !important;
+}
+
+/* Título más grande */
+.custom-swal-title {
+    font-size: 1.8em !important;
+}
+
+/* Contenido más grande */
+.custom-swal-content {
+    font-size: 1.2em !important;
+}
+
+/* Botón más grande */
+.custom-swal-button {
+    font-size: 1.1em !important;
+    padding: 0.8em 1.5em !important;
+}
+
+/* -------------------------------------------------- */
+/* Sección Modal 
+/* -------------------------------------------------- */
+.ContainerModal .modal-dialog {
+    max-width: 800px;
+    width: 80vw;
+    margin-top: 8vh;
+}
+
+.ContainerModal .modal-content {
+    font-size: 1.9rem;
+    padding: 2rem; /* más espacio interno */
+}
+
+.ContainerModal .modal-title {
+    font-size: 2.4rem;
+    font-weight: bold;
+}
+
+/* Espacio entre grupos */
+.ContainerModal .form-group {
+    margin-bottom: 2rem;
+}
+
+/* Aumentar tamaño del modal */
+.ContainerModal .modal-dialog {
+    max-width: 700px; /* o 80% para hacerlo proporcional */
+    width: 80vw;
+}
+
+.ContainerModal .modal-content {
+    font-size: 1.9rem;
+    padding: 1.5rem;
+}
+
+/* Estilos para inputs y selects dentro del modal */
+.ContainerModal .form-control {
+    font-size: 1.9rem;
+    height: 50px;
+    padding: 10px 15px;
+}
+
+/* Estilos para labels */
+.ContainerModal label {
+    font-size: 1.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Botón del modal */
+.ContainerModal .modal-footer .btn {
+    font-size: 1.9rem;
+    padding: 12px 24px;
+}
+
+/* -------------------------------------------------- */
+/* Sección Modal  XL
+/* -------------------------------------------------- */
+.ContainerModalXL .modal-dialog {
+    max-width: 95vw; /* O lo que desees */
+    width: 95vw;
+    margin-top: 8vh;
+}
+
+
+.ContainerModalXL .modal-content {
+    font-size: 1.9rem;
+    padding: 2rem; /* más espacio interno */
+}
+
+.ContainerModalXL .modal-title {
+    font-size: 2.4rem;
+    font-weight: bold;
+}
+
+/* Espacio entre grupos */
+.ContainerModalXL .form-group {
+    margin-bottom: 2rem;
+}
+
+
+
+.ContainerModalXL .modal-content {
+    font-size: 1.9rem;
+    padding: 1.5rem;
+}
+
+/* Estilos para inputs y selects dentro del modal */
+.ContainerModalXL .form-control {
+    font-size: 1.9rem;
+    height: 50px;
+    padding: 10px 15px;
+}
+
+/* Estilos para labels */
+.ContainerModalXL label {
+    font-size: 1.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Botón del modal */
+.ContainerModalXL .modal-footer .btn {
+    font-size: 1.9rem;
+    padding: 12px 24px;
+}
+/* Estilos para grupos de formulario */
+#SteeringWheelContainerModal .form-group {
+    margin-bottom: 3rem;
+    flex-grow: 1;
+}
+
+/* Inputs ampliados */
+#SteeringWheelContainerModal .form-control-lg {
+    font-size: 2.2rem !important;
+    min-height: 65px;
+    padding: 1.5rem 2rem;
+    line-height: 1.6;
+    border-width: 2px;
+    width: 100%;
+}
+
+/* Labels más destacados */
+#SteeringWheelContainerModal label {
+    font-size: 2.2rem !important;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+}
