@@ -255,7 +255,7 @@ The application also consumes database views for reporting and operational workf
 
 Inspectors can capture inspected materials, register defects, and classify accepted or rejected pieces directly from the operational screen.
 
-![Incoming Inspection](docs/IMAGES/incoming.png)
+![Incoming Inspection](DOCS/IMAGES/incoming.png)
 
 ---
 
@@ -263,7 +263,7 @@ Inspectors can capture inspected materials, register defects, and classify accep
 
 Supervisors can review rejection history, apply filters, and export operational quality reports.
 
-![Rejection Dashboard](docs/IMAGES/rejections.png)
+![Rejection Dashboard](DOCS/IMAGES/rejections.png)
 
 ---
 
@@ -271,7 +271,7 @@ Supervisors can review rejection history, apply filters, and export operational 
 
 The system supports operational tracking of open and closed inspection containers.
 
-![Containers](docs/IMAGES/containers.png)
+![Containers](DOCS/IMAGES/containers.png)
 
 ---
 
@@ -279,7 +279,7 @@ The system supports operational tracking of open and closed inspection container
 
 The system allows users to review and manage inspection parameters by program.
 
-![Parameters](docs/IMAGES/parameters.png)
+![Parameters](DOCS/IMAGES/parameters.png)
 
 ---
 
